@@ -1,0 +1,3 @@
+api/config/secrets.json
+ansible-playbook.retry
+.idea

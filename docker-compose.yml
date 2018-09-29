@@ -1,0 +1,51 @@
+version: '3.4'
+
+networks:
+  internal-network:
+
+services:
+  mongod:
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: auth-user
+      MONGO_INITDB_ROOT_PASSWORD: auth-pass
+    image: mongo
+    networks:
+      - internal-network
+    ports:
+      - "27017:27017"
+    volumes:
+      # Ramdisk data disk will be fast but wont survive reboots
+      # (Only for dev!)
+      - type: tmpfs
+        target: /data/db
+      # mongo Docker image searches this directory for setup scripts
+      - type: bind
+        source: ./data
+        target: /docker-entrypoint-initdb.d
+
+  api:
+    build: api
+    command: yarn run watch
+    expose:
+      - "80"
+    networks:
+      - internal-network
+    ports:
+      - "3000:3000"
+    volumes:
+      - type: bind
+        source: ./api/src
+        target: /opt/web-app/api/src
+      - type: bind
+        source: ./api/config
+        target: /opt/web-app/api/config
+
+  nginx:
+    environment:
+      - API_URL=http://api
+    build: static
+    networks:
+      - internal-network
+    ports:
+      - "80:80"
+      - "443:443"

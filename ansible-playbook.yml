@@ -1,0 +1,78 @@
+---
+##
+#  Actual tasks
+##
+- become: yes
+  become_method: sudo
+  hosts: dev
+  tasks:
+  - name: Install Ansible dependencies (apt)
+    apt:
+      cache_valid_time: 3600
+      name: "{{item}}"
+      state: latest
+    with_items:
+    - python-pip
+    - python-dev
+
+  # These seem to have name conflicts with the different python dependencies... :-(
+  # - name: Install Ansible dependencies (pip)
+  #   pip:
+  #     name: "{{item}}"
+  #     state: latest
+  #   with_items:
+  #     - docker-py
+  #     - docker-compose
+
+  - name: Install third party repository signing keys
+    apt_key:
+      state: present
+      url: "{{item}}"
+    with_items:
+    - "https://download.docker.com/linux/debian/gpg"
+
+  - name: Install third party apt repositories
+    apt_repository:
+      state: present
+      repo: "{{item}}"
+    with_items:
+    #- "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+    - "deb [arch=amd64] https://download.docker.com/linux/debian stretch stable"
+    notify: [update apt cache]
+
+  - name: Ensure inotify is allowed to watch allot of inodes (fix nodemon)
+    lineinfile:
+      line: "fs.inotify.max_user_watches=524288"
+      name: "/etc/sysctl.conf"
+    notify: [Refresh systemctl]
+
+  # Update apt cache now if needed
+  - meta: flush_handlers
+
+  - name: Install apt dependencies.
+    apt:
+      state: latest
+      name: "{{item}}"
+    with_items:
+    - docker-ce
+
+  # I really dont like this method of installing software but the apt version is out of date and the pip version is
+  # broken due to name conflicts of the python requires :-(
+  - name: Install docker compose.
+    get_url:
+      dest: /usr/local/bin/docker-compose
+      mode: 0550
+      url: https://github.com/docker/compose/releases/download/1.22.0/docker-compose-Linux-x86_64
+
+  - name: Install docker compose command completions.
+    get_url:
+      dest: /etc/bash_completion.d/docker-compose
+      mode: 0555
+      url: https://raw.githubusercontent.com/docker/compose/1.22.0/contrib/completion/bash/docker-compose
+
+  handlers:
+  - name: Refresh systemctl
+    shell: sysctl -p
+
+  - name: update apt cache
+    apt: update_cache=yes
