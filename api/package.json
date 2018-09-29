@@ -20,6 +20,7 @@
     "nodemon": "^1.18.4"
   },
   "scripts": {
-    "watch": "nodemon src/app.js"
+    "watch": "nodemon src/app.js",
+    "lint": "eslint  --format codeframe ."
   }
 }
