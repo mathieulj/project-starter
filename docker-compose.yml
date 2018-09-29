@@ -26,8 +26,8 @@ services:
   api:
     build: api
     command: yarn run watch
-    expose:
-      - "80"
+    depends_on:
+      - mongod
     networks:
       - internal-network
     ports:
@@ -39,6 +39,12 @@ services:
       - type: bind
         source: ./api/config
         target: /opt/web-app/api/config
+      - type: bind
+        source: ./api/package.json
+        target: /opt/web-app/api/package.json
+      - type: bind
+        source: ./api/yarn.lock
+        target: /opt/web-app/api/yarn.lock
 
   nginx:
     environment:
