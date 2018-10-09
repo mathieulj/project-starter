@@ -8,7 +8,7 @@ log4js.configure(require('../config/logging.json'));
 const logger = log4js.getLogger('app');
 
 const DB = require('./common/DB');
-const errorMiddleware = require('./errors/middleware');
+const errorMiddleware = require('./errors/errorMiddleware');
 const permissionsMiddleware = require('./users/permissionsMiddleware');
 const sessionStore = require('./sessionStore');
 const {sessionSecrets} = require('./common/secrets');
