@@ -8,11 +8,13 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
+    "bcrypt": "^3.0.1",
     "koa": "^2.5.3",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
     "koa-session": "^5.9.0",
     "log4js": "^3.0.5",
+    "mongodb": "^3.1.6",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

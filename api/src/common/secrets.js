@@ -1,5 +1,5 @@
 const logger = require('log4js').getLogger('secrets');
-const _SecretsFile = '../config/secrets.json';
+const _SecretsFile = '../../config/secrets.json';
 
 try {
     module.exports = require(_SecretsFile);

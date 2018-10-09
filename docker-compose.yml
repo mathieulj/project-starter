@@ -28,6 +28,8 @@ services:
     command: yarn run watch
     depends_on:
       - mongod
+    links:
+      - mongod
     networks:
       - internal-network
     ports:
@@ -47,9 +49,11 @@ services:
         target: /opt/web-app/api/yarn.lock
 
   nginx:
-    environment:
-      - API_URL=http://api
     build: static
+    depends_on:
+      - api
+    links:
+      - api
     networks:
       - internal-network
     ports:
