@@ -1,5 +1,10 @@
 # Simple SPA web application template
 
+## Project structure
+The server side API is rooted in the api directory and is organised by object hierarchy. In each object's directory,
+a router will handle Koa routing and request sanitization (ensuring that the API is respected) before handing off to
+the controller where the business logic should reside.
+
 ## Development
 
 ### Requirements
@@ -12,7 +17,7 @@
 ### Getting started
 
 The included ansible playbook will setup required dependencies. The database wont 
-survive reboots be will refresh nice and fast for devellopement lifecycles.
+survive reboots be will refresh nice and fast for development life cycles.
 
 To run the playbook:
 
