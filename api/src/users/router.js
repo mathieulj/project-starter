@@ -95,7 +95,7 @@ router.put('/:id', async (ctx) => {
                 type: 'string'
             }
         },
-        required: ['email']
+        required: []
     });
 
     ctx.body = await userController.update(id, attributes);

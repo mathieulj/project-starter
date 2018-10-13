@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const DB = require('../common/DB');
+const {MongoError} = require('mongodb');
 const NotFoundError = require('../errors/NotFoundError');
 const ObjectID = require('mongodb').ObjectID;
 const ValidationError = require('../errors/ValidationError');
@@ -68,24 +69,32 @@ module.exports.getAll = async () => {
  */
 module.exports.create = async ({email, password}) => {
     // FIXME: Implement user permissions logic, not just any user can create another user
-    // FIXME: This should guard against a duplicate Email...
     const hash = await bcrypt.hash(password, _SaltRounds);
 
-    const db = await DB;
-    const {insertedId} = await db.collection('Users')
-        .insertOne({
-            email,
-            password: hash
-        });
+    try {
+        const db = await DB;
+        const {ops} = await db.collection('Users')
+            .insertOne({
+                email,
+                password: hash
+            });
 
-    return await db.collection('Users')
-        .findOne({
-            _id: new ObjectID(insertedId)
-        }, {
-            projection: {
-                password: 0
+        const [user] = ops;
+        delete user.password;
+        return user;
+    } catch (err) {
+        if (err instanceof MongoError) {
+            // MongoDB error 11000 is a duplicate key error
+            if (/E11000/.test(err.message)) {
+                throw new ValidationError(`Duplicate email "${email}"`, {
+                    validationErrors: {
+                        email: 'duplicate'
+                    }
+                });
             }
-        });
+        }
+        throw err;
+    }
 };
 
 /**
@@ -119,16 +128,17 @@ module.exports.get = async (id) => {
  * Update an existing user by ID
  * @param {ObjectID} id
  * @param {Object} attributes
- * @param {String} attributes.email
- * @param {String} attributes.password
+ * @param {String} [attributes.email]
+ * @param {String} [attributes.password]
  * @returns {Promise<User>}
  */
 module.exports.update = async (id, {email, password}) => {
     // FIXME: Implement user permissions logic, not just any user can modify any other user
-    // FIXME: This should guard against a duplicate Email...
-    const patch = {
-        email
-    };
+    const patch = {};
+
+    if (email) {
+        patch.email = email;
+    }
 
     if (password) {
         patch.password = await bcrypt.hash(password, _SaltRounds);
@@ -136,30 +146,40 @@ module.exports.update = async (id, {email, password}) => {
 
     const db = await DB;
 
-    await db.collection('Users')
-        .updateOne({
-            _id: new ObjectID(id)
-        }, {
-            $set: patch
-        });
+    try {
+        const {value} = await db.collection('Users')
+            .findOneAndUpdate({
+                _id: new ObjectID(id)
+            }, {
+                $set: patch
+            }, {
+                projection: {
+                    password: 0
+                },
+                returnOriginal: false
+            });
 
-    const user = await db.collection('Users')
-        .findOne({
-            _id: new ObjectID(id)
-        }, {
-            projection: {
-                password: 0
+        if (!value) {
+            throw new NotFoundError(`User id '${id}' not found.`, {
+                type: 'User',
+                id
+            });
+        }
+
+        return value;
+    } catch (err) {
+        if (err instanceof MongoError) {
+            // MongoDB error 11000 is a duplicate key error
+            if (/E11000/.test(err.message)) {
+                throw new ValidationError(`Duplicate email "${email}"`, {
+                    validationErrors: {
+                        email: 'duplicate'
+                    }
+                });
             }
-        });
-
-    if (!user) {
-        throw new NotFoundError(`User id '${id}' not found.`, {
-            type: 'User',
-            id
-        });
+        }
+        throw err;
     }
-
-    return user;
 };
 
 /**

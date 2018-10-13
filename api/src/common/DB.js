@@ -1,7 +1,7 @@
-const MongoClient = require('mongodb').MongoClient;
+const {MongoClient} = require('mongodb');
 
 const log4js = require('log4js');
-const logger = log4js.getLogger('DB');
+const logger = log4js.getLogger('common.DB');
 
 const mongoUser = 'application';
 const mongoPass = 'application';
