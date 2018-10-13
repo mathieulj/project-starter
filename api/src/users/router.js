@@ -18,7 +18,8 @@ router.put('/auth', async (ctx) => {
         properties: {
             email: {
                 description: 'User E-mail address.',
-                type: 'string'
+                type: 'string',
+                format: 'email'
             },
             password: {
                 description: 'User password.',
@@ -88,7 +89,8 @@ router.put('/:id', async (ctx) => {
         properties: {
             email: {
                 description: 'User E-mail address.',
-                type: 'string'
+                type: 'string',
+                format: 'email'
             },
             password: {
                 description: 'User password.',
@@ -126,7 +128,8 @@ router.post('/', async (ctx) => {
         properties: {
             email: {
                 description: 'User E-mail address.',
-                type: 'string'
+                type: 'string',
+                format: 'email'
             },
             password: {
                 description: 'User password.',
