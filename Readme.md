@@ -5,6 +5,61 @@ The server side API is rooted in the api directory and is organised by object hi
 a router will handle Koa routing and request sanitization (ensuring that the API is respected) before handing off to
 the controller where the business logic should reside.
 
+## User permissions model
+Each user will have a set of permissions as to what they are allowed to access. The default dev user will have unlimited
+access but subsequent users will have limited access by default.
+
+The permissions document defines what the user can access. For each of the 2 operations with a payload (create, update),
+the permissions document will contain a hash map of URL regex and their associated limits. For each of the 2 operations
+without a payload (read, delete), the permissions document will contain an array of URL regex. If no regex matches the
+requested URL, the request is denied. If a limit matches in the request body, the url match is ignored and the search
+continues.
+
+### Example permission (complete access)
+
+    {
+        create : {
+            // Allow creating any document
+            '.*' : []
+        },
+        read : [
+            // Allow reading any document
+            '.*'
+        ],
+        update : {
+            // Allow updating any document
+            '.*' : []
+        },
+        delete : [
+            // Allow deleting any document
+            '.*'
+        ]
+    }
+
+### Example permission (limited access)
+For `user._id === '5bc1dce7ea9465002a487f8e'`
+
+    {
+        create : {
+            // Allow creation of users only with default permissions
+            'users' : ["permissions"]
+        },
+        read : [
+            // Allow reading any document
+            '.*'
+        ],
+        update : {
+            // Allow self update except email changes
+            'users/5bc1dce7ea9465002a487f8e' : ["email"]
+            // All other updates denied
+        },
+        delete : [
+            // Allow self removal
+            'users/5bc1dce7ea9465002a487f8e'
+            // All other deletes denied
+        ]
+    }
+
 ## Development
 
 ### Requirements
