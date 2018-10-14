@@ -1,5 +1,10 @@
 # Simple SPA web application template
 
+## **Project state**
+This is a work in progress and does not yet have all necessary parts implemented. Furthermore, this is a personal
+endeavor pursued on my free time without sponsorship from my employer and as such is limited in velocity by what free
+time I have available on nights and week-ends.
+
 ## Project structure
 The server side API is rooted in the api directory and is organised by object hierarchy. In each object's directory,
 a router will handle Koa routing and request sanitization (ensuring that the API is respected) before handing off to
