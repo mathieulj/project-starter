@@ -5,4 +5,4 @@
 
 DATA=/docker-entrypoint-initdb.d
 
-mongo ${DATA}/scripts/000_create_db.js
+cat ${DATA}/scripts/*.js | mongo
