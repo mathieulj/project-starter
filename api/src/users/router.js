@@ -4,6 +4,71 @@ const userController = require('./controller');
 
 const router = new Router();
 
+const _UserSchema = {
+    email: {
+        description: 'User E-mail address.',
+        type: 'string',
+        format: 'email'
+    },
+    password: {
+        description: 'User password.',
+        type: 'string'
+    },
+    permissions: {
+        description: 'User permissions specification',
+        type: 'object',
+        properties: {
+            create: {
+                description: 'Document creation permissions',
+                type: 'object',
+                patternProperties : {
+                    '^.+$' : {
+                        type: 'array',
+                        items: {
+                            type: 'string'
+                        }
+                    }
+                }
+            },
+            delete: {
+                description: 'Document creation permissions',
+                type: 'array',
+                items: {
+                    type: 'string'
+                }
+            },
+            read: {
+                description: 'Document creation permissions',
+                type: 'array',
+                items: {
+                    type: 'string'
+                }
+            },
+            update: {
+                description: 'Document creation permissions',
+                type: 'object',
+                patternProperties : {
+                    '^.+$' : {
+                        type: 'array',
+                        items: {
+                            type: 'string'
+                        }
+                    }
+                }
+            }
+        },
+        required: ['create', 'delete', 'read', 'update']
+    }
+};
+
+const _IdSchema = {
+    id: {
+        description: 'User ID.',
+        pattern: ApiHelper.idPattern,
+        type: 'string'
+    }
+};
+
 router.get('/auth', async (ctx) => {
     ctx.body = {
         authenticated: !!ctx.session.userID,
@@ -56,13 +121,7 @@ router.get('/:id', async (ctx) => {
     const {id} = ApiHelper.getAPI(ctx.params, {
         title: 'User fetch',
         type: 'object',
-        properties: {
-            id: {
-                description: 'User ID.',
-                pattern: ApiHelper.idPattern,
-                type: 'string'
-            }
-        },
+        properties: _IdSchema,
         required: ['id']
     });
 
@@ -73,30 +132,14 @@ router.put('/:id', async (ctx) => {
     const {id} = ApiHelper.getAPI(ctx.params, {
         title: 'User update',
         type: 'object',
-        properties: {
-            id: {
-                description: 'User ID.',
-                pattern: ApiHelper.idPattern,
-                type: 'string'
-            }
-        },
+        properties: _IdSchema,
         required: ['id']
     });
 
     const attributes = ApiHelper.getAPI(ctx.request.body, {
         title: 'User authentication request',
         type: 'object',
-        properties: {
-            email: {
-                description: 'User E-mail address.',
-                type: 'string',
-                format: 'email'
-            },
-            password: {
-                description: 'User password.',
-                type: 'string'
-            }
-        },
+        properties: _UserSchema,
         required: []
     });
 
@@ -107,13 +150,7 @@ router.del('/:id', async (ctx) => {
     const {id} = ApiHelper.getAPI(ctx.params, {
         title: 'User delete',
         type: 'object',
-        properties: {
-            id: {
-                description: 'User ID.',
-                pattern: ApiHelper.idPattern,
-                type: 'string'
-            }
-        },
+        properties: _IdSchema,
         required: ['id']
     });
 
@@ -125,17 +162,7 @@ router.post('/', async (ctx) => {
     const attributes = ApiHelper.getAPI(ctx.request.body, {
         title: 'User create',
         type: 'object',
-        properties: {
-            email: {
-                description: 'User E-mail address.',
-                type: 'string',
-                format: 'email'
-            },
-            password: {
-                description: 'User password.',
-                type: 'string'
-            }
-        },
+        properties: _UserSchema,
         required: ['email', 'password']
     });
 

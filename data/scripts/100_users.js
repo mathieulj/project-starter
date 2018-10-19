@@ -18,13 +18,13 @@ db2.Users.insert({
     password: '$2b$10$NLNWO5ueXJ3XMMn/EQ8riOsb7nmIDoi1gRLn.QMipbm1GONHqOnCO',
     permissions : {
         create : {
-            '.*' : null
+            '.*' : []
         },
         read : [
             '.*'
         ],
         update : {
-            '.*' : null
+            '.*' : []
         },
         delete : [
             '.*'

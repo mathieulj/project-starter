@@ -12,6 +12,7 @@ const errorMiddleware = require('./errors/errorMiddleware');
 const permissionsMiddleware = require('./users/permissionsMiddleware');
 const sessionStore = require('./sessionStore');
 const {sessionSecrets} = require('./common/secrets');
+const settings = require('./common/settings');
 
 const app = new Koa();
 app.proxy = true;
@@ -36,7 +37,7 @@ app.use(errorMiddleware);
 // Ensure that authentication is required to access API
 app.use(permissionsMiddleware);
 
-const rootRouter = new Router({prefix: '/api'});
+const rootRouter = new Router({prefix: settings.APP_PREFIX});
 
 rootRouter
     .use('/users', require('./users/router').routes());

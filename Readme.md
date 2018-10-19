@@ -18,7 +18,7 @@ The permissions document defines what the user can access. For each of the 2 ope
 the permissions document will contain a hash map of URL regex and their associated limits. For each of the 2 operations
 without a payload (read, delete), the permissions document will contain an array of URL regex. If no regex matches the
 requested URL, the request is denied. If a limit matches in the request body, the url match is ignored and the search
-continues.
+continues. As special case, the id of the user making the request can be substituted with `{{self}}` in these Regex.
 
 ### Example permission (complete access)
 
@@ -42,25 +42,23 @@ continues.
     }
 
 ### Example permission (limited access)
-For `user._id === '5bc1dce7ea9465002a487f8e'`
-
     {
         create : {
             // Allow creation of users only with default permissions
-            'users' : ["permissions"]
+            '^users$' : ['permissions']
         },
         read : [
             // Allow reading any document
             '.*'
         ],
         update : {
-            // Allow self update except email changes
-            'users/5bc1dce7ea9465002a487f8e' : ["email"]
+            // Allow self update except email or permissions changes
+            '^users/{{self}}$' : ['email', 'permissions']
             // All other updates denied
         },
         delete : [
             // Allow self removal
-            'users/5bc1dce7ea9465002a487f8e'
+            '^users/{{self}}$'
             // All other deletes denied
         ]
     }

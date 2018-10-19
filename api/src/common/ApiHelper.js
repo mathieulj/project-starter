@@ -25,6 +25,6 @@ module.exports.getAPI = function (request, schema) {
 
 /**
  * Validation pattern for MongoDB Object IDs
- * @type {string}
+ * @type {String}
  */
 module.exports.idPattern = '^[a-f0-9]{24}$';
