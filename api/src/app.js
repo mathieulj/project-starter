@@ -20,7 +20,7 @@ app.keys = sessionSecrets;
 
 // Track user sessions
 app.use(session({
-    maxAge: 5 * 60 * 1000,
+    maxAge: settings.MAX_SESSION_AGE_MS,
     rolling: true,
     signed: true,
     store: sessionStore
