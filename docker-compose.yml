@@ -11,8 +11,6 @@ services:
     image: mongo
     networks:
       - internal-network
-    ports:
-      - "27017:27017"
     volumes:
       # Ramdisk data disk will be fast but wont survive reboots
       # (Only for dev!)
@@ -32,8 +30,6 @@ services:
       - mongod
     networks:
       - internal-network
-    ports:
-      - "3000:3000"
     volumes:
       - type: bind
         source: ./api/src
@@ -48,12 +44,52 @@ services:
         source: ./api/yarn.lock
         target: /opt/web-app/api/yarn.lock
 
+  client:
+    build: client
+    networks:
+      - internal-network
+    ports:
+      - "8080:8080"
+    volumes:
+      - type: bind
+        source: ./client/.browserslistrc
+        target: /opt/web-app/client/.browserslistrc
+      - type: bind
+        source: ./client/.eslintrc.js
+        target: /opt/web-app/client/.eslintrc.js
+      - type: bind
+        source: ./client/babel.config.js
+        target: /opt/web-app/client/babel.config.js
+      - type: bind
+        source: ./client/jest.config.js
+        target: /opt/web-app/client/jest.config.js
+      - type: bind
+        source: ./client/postcss.config.js
+        target: /opt/web-app/client/postcss.config.js
+      - type: bind
+        source: ./client/public
+        target: /opt/web-app/client/public
+      - type: bind
+        source: ./client/src
+        target: /opt/web-app/client/src
+      - type: bind
+        source: ./client/tests
+        target: /opt/web-app/client/tests
+      - type: bind
+        source: ./client/package.json
+        target: /opt/web-app/client/package.json
+      - type: bind
+        source: ./client/yarn.lock
+        target: /opt/web-app/client/yarn.lock
+
   nginx:
     build: static
     depends_on:
       - api
+      - client
     links:
       - api
+      - client
     networks:
       - internal-network
     ports:
