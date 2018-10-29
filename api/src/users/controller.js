@@ -183,6 +183,7 @@ module.exports.get = async (id) => {
  */
 module.exports.update = async (id, attributes) => {
     if (attributes.password) {
+        // FIXME Invalidate session when the password changes...
         attributes.password = await bcrypt.hash(attributes.password, _SaltRounds);
     }
 
@@ -213,7 +214,7 @@ module.exports.update = async (id, attributes) => {
         if (err instanceof MongoError) {
             // MongoDB error 11000 is a duplicate key error
             if (/E11000/.test(err.message)) {
-                throw new ValidationError(`Duplicate email "${email}"`, {
+                throw new ValidationError(`Duplicate email "${attributes.email}"`, {
                     validationErrors: {
                         email: 'duplicate'
                     }
