@@ -40,13 +40,13 @@ const canAccessURLWithoutAuth = (path, method) => {
  * @private
  */
 const _methodPermissionMap = {
-    options: 'read',
-    head: 'read',
-    get: 'read',
-    patch: 'update',
-    put: 'update',
-    post: 'create',
-    delete: 'delete'
+    OPTIONS: 'read',
+    HEAD: 'read',
+    GET: 'read',
+    PATCH: 'update',
+    PUT: 'update',
+    POST: 'create',
+    DELETE: 'delete'
 };
 
 module.exports = async (ctx, next) => {
@@ -77,7 +77,7 @@ module.exports = async (ctx, next) => {
     // Save the user on the request state object.
     ctx.state.user = user;
 
-    const action = _methodPermissionMap[method.toLowerCase()];
+    const action = _methodPermissionMap[method];
     if (!action || !UsersController.isPermitted(user, action, relativePath, request.body)) {
         throw new AccessDeniedError(`You do not have permission to ${method} '${path}' with the given payload.`);
     }
