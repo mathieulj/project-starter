@@ -11,7 +11,7 @@ const csrfMiddleware = require('./csrfMiddleware');
 const DB = require('./common/DB');
 const errorMiddleware = require('./errors/errorMiddleware');
 const permissionsMiddleware = require('./users/permissionsMiddleware');
-const sessionStore = require('./sessionStore');
+const sessionStore = require('./users/sessionStore');
 const {sessionSecrets} = require('./common/secrets');
 const settings = require('./common/settings');
 

@@ -3,6 +3,7 @@ const DB = require('../common/DB');
 const {MongoError} = require('mongodb');
 const NotFoundError = require('../errors/NotFoundError');
 const ObjectID = require('mongodb').ObjectID;
+const sessionStore = require('./sessionStore');
 const ValidationError = require('../errors/ValidationError');
 
 const _SaltRounds = 10;
@@ -183,7 +184,6 @@ module.exports.get = async (id) => {
  */
 module.exports.update = async (id, attributes) => {
     if (attributes.password) {
-        // FIXME Invalidate session when the password changes...
         attributes.password = await bcrypt.hash(attributes.password, _SaltRounds);
     }
 
@@ -207,6 +207,11 @@ module.exports.update = async (id, attributes) => {
                 type: 'User',
                 id
             });
+        }
+
+        if (attributes.password) {
+            // Force a login for any active sessions of the given user.
+            await sessionStore.clearAny(id);
         }
 
         return value;
