@@ -7,6 +7,7 @@ const session = require('koa-session');
 log4js.configure(require('../config/logging.json'));
 const logger = log4js.getLogger('app');
 
+const csrfMiddleware = require('./csrfMiddleware');
 const DB = require('./common/DB');
 const errorMiddleware = require('./errors/errorMiddleware');
 const permissionsMiddleware = require('./users/permissionsMiddleware');
@@ -33,6 +34,9 @@ app.use(bodyParser({
 
 // Ensure our errors are properly returned to the user
 app.use(errorMiddleware);
+
+// Ensure that mutating requests are protected from CSRF
+app.use(csrfMiddleware);
 
 // Ensure that authentication is required to access API
 app.use(permissionsMiddleware);
