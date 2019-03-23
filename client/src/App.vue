@@ -1,31 +1,85 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <div id="app">
+        <div class="header"><h1>Title</h1></div>
+        <nav class="navigator">
+            <NavItem
+                v-bind:children="navItems"
+                v-bind:title="null"
+                v-bind:link="null"
+            />
+        </nav>
+        <div class="main"><router-view /></div>
     </div>
-    <router-view/>
-  </div>
 </template>
+
+<script>
+import NavItem from './components/NavItem';
+
+export default {
+    components: {
+        NavItem: NavItem
+    },
+    data: function() {
+        return {
+            navItems: [
+                {
+                    title: 'Home',
+                    link: '/',
+                    children: []
+                },
+                {
+                    title: 'Administration',
+                    children: [
+                        {
+                            title: 'Users',
+                            link: '/Users',
+                            children: []
+                        },
+                        {
+                            title: 'Encryption',
+                            link: '/SSL',
+                            children: []
+                        }
+                    ]
+                },
+                {
+                    title: 'Look and feel',
+                    children: [
+                        {
+                            title: 'Theme',
+                            link: '/Theme',
+                            children: []
+                        }
+                    ]
+                }
+            ]
+        };
+    }
+};
+</script>
 
 <style>
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+    display: grid;
+    grid-gap: 1em;
+    grid-template-areas:
+        "header header"
+        "navigator main";
+    grid-template-columns: auto 1fr;
 }
-#nav {
-  padding: 30px;
+.navigator > div > .navigator--children {
+    background-color: #D3DFE3;
+    padding: 0.3em;
+    border-radius: 0.3em;
 }
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+    .navigator {
+        grid-area: navigator;
+    }
+.main {
+    grid-area: main;
 }
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+.header {
+    grid-area: header;
+    text-align: center;
 }
 </style>
