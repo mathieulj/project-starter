@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import 'typeface-roboto';
+
+const requireInContext = require.context("material-design-icons/iconfont", true, /\.(css|eot|woff|woff2|ttf)$/);
+requireInContext.keys().forEach(requireInContext);
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
