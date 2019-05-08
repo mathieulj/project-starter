@@ -50,29 +50,11 @@ services:
       - internal-network
     volumes:
       - type: bind
-        source: ./client/.browserslistrc
-        target: /opt/web-app/client/.browserslistrc
-      - type: bind
-        source: ./client/.eslintrc.js
-        target: /opt/web-app/client/.eslintrc.js
-      - type: bind
-        source: ./client/babel.config.js
-        target: /opt/web-app/client/babel.config.js
-      - type: bind
-        source: ./client/jest.config.js
-        target: /opt/web-app/client/jest.config.js
-      - type: bind
-        source: ./client/postcss.config.js
-        target: /opt/web-app/client/postcss.config.js
-      - type: bind
         source: ./client/public
         target: /opt/web-app/client/public
       - type: bind
         source: ./client/src
         target: /opt/web-app/client/src
-      - type: bind
-        source: ./client/tests
-        target: /opt/web-app/client/tests
       - type: bind
         source: ./client/package.json
         target: /opt/web-app/client/package.json
