@@ -8,17 +8,17 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "bcrypt": "^3.0.1",
-    "koa": "^2.5.3",
+    "bcrypt": "^3.0.6",
+    "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
-    "koa-session": "^5.9.0",
-    "log4js": "^3.0.5",
-    "mongodb": "^3.1.6",
+    "koa-session": "^5.11.0",
+    "log4js": "^4.1.1",
+    "mongodb": "^3.2.3",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "eslint": "^5.6.1",
+    "eslint": "^5.16.0",
     "nodemon": "^1.18.4"
   },
   "scripts": {
