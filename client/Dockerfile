@@ -8,7 +8,5 @@ RUN yarn install --pure-lockfile
 
 COPY public ./public
 COPY src ./src
-COPY tests ./tests
-COPY *.config.js .browserslistrc .eslintrc.js ./
 
-CMD yarn serve
+CMD yarn start
